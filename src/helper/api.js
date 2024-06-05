@@ -2,11 +2,15 @@ import axios from "axios"
 import { useQueryClient, useMutation, useQuery } from "react-query"
 
 const registerVisitor = async (data) => {
-  return await axios.get('https://catfact.ninja/fact')
+  return await axios.post('http://localhost:8000/save-visitor', data)
 }
 
-const getVisitors = async () => {
-  return {}
+const updateVisitor = async (id) => {
+  return await axios.patch(`http://localhost:8000/update-visitor/${id}`)
+}
+
+const getVisitors = async (page) => {
+  return await axios.get(`http://localhost:8000/get-all-visitors?page=${page}`)
 }
 
 export function useRegisterVisitorQuery() {
@@ -19,14 +23,24 @@ export function useRegisterVisitorQuery() {
   })
 }
 
-export function useGetVisitorsQuery(page = 1, limit = 10, search = '') {
+export function useGetVisitorsQuery(page = 1) {
   return useQuery(
-      ['useGetVisitorsQuery', page, limit, search],
-      () => getVisitors(page, limit, search),
+      ['useGetVisitorsQuery', page],
+      () => getVisitors(page),
       {
           keepPreviousData: true,
           staleTime: Infinity,
           enabled: true,
       },
   )
+}
+
+export function useUpdateVisitorQuery() {
+  const queryClient = useQueryClient()
+  return useMutation((arg) => updateVisitor(arg), {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['UpdateVisitor'])
+      return data
+    }
+  })
 }

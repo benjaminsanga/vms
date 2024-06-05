@@ -1,67 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from '../images/logo.png';
 import { Link } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useGetVisitorsQuery } from "../helper/api";
+import { useGetVisitorsQuery, useUpdateVisitorQuery } from "../helper/api";
 
 const VisitorsList = () => {
+  
+  const [visitors, setVisitors] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  const {data, isLoading, refetch} = useGetVisitorsQuery(currentPage)
+  const {mutate, isSuccess} = useUpdateVisitorQuery()
 
-  const {data, isLoading} = useGetVisitorsQuery()
+  useEffect(() => {
+    setVisitors(data?.data?.visitors);
+    setTotalPages(data?.data?.totalPages);
+  }, [data])
 
-  const [details, setDetails] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      host: "Lt Sumn",
-      phone: "08099485746",
-      checkInTime: "08:00 AM",
-      checkOutTime: "05:00 PM",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      host: "Lt Sumn",
-      phone: "08099485746",
-      checkInTime: "09:00 AM",
-      checkOutTime: "06:00 PM",
-    },
-    {
-      id: 3,
-      name: "Sam Wilson",
-      host: "Lt Sumn",
-      phone: "08099485746",
-      checkInTime: "07:00 AM",
-      checkOutTime: "04:00 PM",
-    },
-    {
-      id: 4,
-      name: "Mary Johnson",
-      host: "Lt Sumn",
-      phone: "08099485746",
-      checkInTime: "10:00 AM",
-      checkOutTime: "07:00 PM",
-    },
-    {
-      id: 5,
-      name: "Peter Parker",
-      host: "Lt Sumn",
-      phone: "08099485746",
-      checkInTime: "11:00 AM",
-      checkOutTime: "08:00 PM",
-    },
-  ]);
+  useEffect(() => {
+    refetch()
+  }, [currentPage])
 
   if (isLoading) {
     return <p className="text-center py-5">Loading...</p>
   }
-  console.log(data, 'data');
 
+  if (isSuccess) {
+    alert("Checkout time updated.")
+  }
+  
   const handleUpdateCheckOutTime = (id) => {
-    const newTime = prompt("Enter new checkout time:");
-    if (newTime) {
-      setDetails(
-        details.map((detail) =>
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const newTime = `${hours}:${minutes}:${seconds}`
+    const isOK = window.confirm(`Update checkout to current time: ${newTime}`)
+    console.log(isOK, 'isOK');
+    if (isOK) {
+      console.log('...');
+      mutate(id)
+      setVisitors(
+        visitors?.map((detail) =>
           detail.id === id ? { ...detail, checkOutTime: newTime } : detail
         )
       );
@@ -92,18 +74,18 @@ const VisitorsList = () => {
           </tr>
         </thead>
         <tbody>
-          {details.map((detail, index) => (
-            <tr key={detail.id}>
+          {visitors?.map(({id, nameOfVisitor, nameOfHost, phoneNumber, checkInTime, checkOutTime}, index) => (
+            <tr key={id}>
               <td>{index + 1}</td>
-              <td>{detail.name}</td>
-              <td>{detail.host}</td>
-              <td>{detail.phone}</td>
-              <td>{detail.checkInTime}</td>
-              <td>{detail.checkOutTime}</td>
+              <td>{nameOfVisitor}</td>
+              <td>{nameOfHost}</td>
+              <td>{phoneNumber}</td>
+              <td>{checkInTime}</td>
+              <td>{checkOutTime || '-'}</td>
               <td>
                 <button
-                  className="btn btn-primary"
-                  onClick={() => handleUpdateCheckOutTime(detail.id)}
+                  className="btn btn-sm btn-primary"
+                  onClick={() => handleUpdateCheckOutTime(id)}
                 >
                   Update Checkout Time
                 </button>
@@ -112,6 +94,15 @@ const VisitorsList = () => {
           ))}
         </tbody>
       </table>
+      <div className="d-flex flex-row justify-content-between">
+        <div>
+          <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage <= 1} className="btn btn-sm btn-success">Previous</button>
+          <button onClick={() => setCurrentPage(currentPage + 1)} disabled={totalPages === 1} className="btn btn-sm btn-success ms-3">Next</button>
+        </div>
+        <div>
+          Page: {`${currentPage}/${totalPages}`}
+        </div>
+      </div>
     </div>
   );
 };

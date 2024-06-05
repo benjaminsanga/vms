@@ -139,7 +139,7 @@ const VisitorsList = () => {
                         className="btn btn-sm btn-primary"
                         onClick={() => handleUpdateCheckOutTime(id)}
                       >
-                        Update Checkout Time
+                        Set Checkout Time
                       </button>
                     )}
                   </td>
@@ -153,7 +153,7 @@ const VisitorsList = () => {
         )}
       </table>
       <div className="d-flex flex-row justify-content-between">
-        <div>
+        <div className="d-flex flex-row align-items-center">
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage <= 1}
@@ -168,8 +168,21 @@ const VisitorsList = () => {
           >
             Next
           </button>
+          <p className="m-0 ps-4">Items per page: 
+            <select onChange={(e) => setLimit(e.target.value)} className="m-2">
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </p>
+          <button
+            onClick={() => {window.print()}}
+            className="btn btn-sm btn-success ms-3"
+          >Print Page</button>
         </div>
-        <div>Page: {`${currentPage}/${totalPages}`}</div>
+        <div className="d-flex flex-row">
+          <p className="m-0">Page: {`${currentPage}/${totalPages}`}</p>
+        </div>
       </div>
     </div>
   );

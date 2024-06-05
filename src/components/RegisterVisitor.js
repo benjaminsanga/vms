@@ -8,7 +8,7 @@ import { useRegisterVisitorQuery } from '../helper/api';
 
 const RegisterVisitor = () => {
 
-  const {data, isError, error, mutate} = useRegisterVisitorQuery()
+  const {data, isError, error, mutate, isSuccess} = useRegisterVisitorQuery()
 
   const {
     register,
@@ -36,6 +36,9 @@ const RegisterVisitor = () => {
       </header>
       <div className="container mt-2 px-5 mx-5">
         <h2 className='text-center mb-5'>Visitor's Form</h2>
+        {isSuccess && <div className="alert alert-success" style={{width: '50%', margin: '0 auto'}}>
+          <p className='p-0 m-0'><strong>Success!</strong> Visitor data recorded.</p>
+        </div>}
         <form className='m-5' onSubmit={handleSubmit(submitVisitorData)}>
           <div className="row mx-5">
             <div className="col-md-6">

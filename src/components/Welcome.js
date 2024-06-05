@@ -15,7 +15,7 @@ const Welcome = () => {
           <Link to={'/register-visitor'}>
             <Button className="btn btn-md btn-primary px-4">Register Visitor</Button>
           </Link>
-          <Link to={'/visitor-list'}>
+          <Link to={'/visitors-list'}>
             <Button className="btn btn-md btn-primary px-4">View Visitors List</Button>
           </Link>
         </div>

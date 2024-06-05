@@ -130,17 +130,21 @@ const RegisterVisitor = () => {
                 </label>
                 <textarea rows={4} className='form-control' id='comment' {...register('comment')}></textarea>
               </div>
-              {/* <div className="mb-3">
-                <label htmlFor="input10" className="form-label">
-                  Input 10
+              <div className="mb-3">
+                <label htmlFor="enteredBy" className="form-label">
+                  Entered By
                 </label>
-                <input type="text" className="form-control" id="input10" />
-              </div> */}
+                <input type="text" className="form-control" id="enteredBy" {...register('enteredBy')} />
+                <span invalid={!!errors.enteredBy} className='text-danger form-error-message'>
+                  {errors?.enteredBy?.message}
+                </span>
+              </div>
             </div>
           </div>
           <div className='d-flex flex-row justify-content-center my-3'>
             <button type='submit' className='btn btn-md btn-success px-5 py-2'>Submit Visitor Form</button>
           </div>
+          
         </form>
       </div>
     </div>

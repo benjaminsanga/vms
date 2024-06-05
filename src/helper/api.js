@@ -9,8 +9,8 @@ const updateVisitor = async (id) => {
   return await axios.patch(`http://localhost:8000/update-visitor/${id}`)
 }
 
-const getVisitors = async (page) => {
-  return await axios.get(`http://localhost:8000/get-all-visitors?page=${page}`)
+const getVisitors = async (page, limit, from, to) => {
+  return await axios.get(`http://localhost:8000/get-all-visitors?page=${page}&limit=${limit}&from=${from}&to=${to}`)
 }
 
 export function useRegisterVisitorQuery() {
@@ -23,10 +23,10 @@ export function useRegisterVisitorQuery() {
   })
 }
 
-export function useGetVisitorsQuery(page = 1) {
+export function useGetVisitorsQuery(page = 1, limit = 10, from, to) {
   return useQuery(
       ['useGetVisitorsQuery', page],
-      () => getVisitors(page),
+      () => getVisitors(page, limit, from, to),
       {
           keepPreviousData: true,
           staleTime: Infinity,

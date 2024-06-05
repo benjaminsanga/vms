@@ -9,5 +9,6 @@ export const RegisterVisitorSchema = Yup.object().shape({
   phoneNumber: Yup.string().required('Phone number is required'),
   tagNumber: Yup.string().required('Tag number is required'),
   dateOfVisit: Yup.string().required('Date of visit is required'),
+  enteredBy: Yup.string().required('This name is required'),
   comment: Yup.string(),
 })
